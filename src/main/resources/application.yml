@@ -1,0 +1,3 @@
+server:
+  port: 9600
+spring:  application:    name: ACS Spring Interface

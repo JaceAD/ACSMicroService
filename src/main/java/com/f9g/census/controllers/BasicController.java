@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,6 +33,7 @@ public class BasicController {
 	ACSDataService dataService = new ACSDataService();
 	ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
 	
+	@CrossOrigin
 	@RequestMapping(value = "year/{year}")
 	public ResponseEntity<String> yearOnlyMapping(@PathVariable int year) throws IOException {
 		HttpHeaders head = new HttpHeaders();
@@ -41,6 +43,7 @@ public class BasicController {
 	}
 	
 	//locations specifiers separate value by : and entries by ,
+	@CrossOrigin
 	@RequestMapping(value = {"year/{year}/location/{locationSpecifiers}", "location/{locationSpecifiers}/year/{year}"},
 					method = RequestMethod.GET)
 	public ResponseEntity<String> anyOrderYearAndGeoMapping(@PathVariable int year, @PathVariable String locationSpecifiers) throws JsonParseException, JsonMappingException, JsonProcessingException, IOException {
@@ -56,7 +59,8 @@ public class BasicController {
 	}
 	
 	//locations specifiers separate value by : and entries by ,
-		@RequestMapping(value = {
+	@CrossOrigin	
+	@RequestMapping(value = {
 									"year/{year}/location/{locationSpecifiers}/variables/{variables}",
 									"year/{year}/variables/{variables}/location/{locationSpecifiers}",
 									"location/{locationSpecifiers}/year/{year}/variables/{variables}",
@@ -78,6 +82,7 @@ public class BasicController {
 		}
 	
 	//locations specifiers separate value by : and entries by ,
+	@CrossOrigin
 	@RequestMapping(value = {
 								"profile/{profile}/year/{year}/location/{locationSpecifiers}/variables/{variables}",
 								"profile/{profile}/year/{year}/variables/{variables}/location/{locationSpecifiers}",

@@ -1,6 +1,7 @@
 package com.f9g.census.services;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -18,6 +19,11 @@ public class ACSDataService {
 	int defaultYear = 2019;
 	String defaultVariables = "NAME";
 	HashMap<String, String> defaultLocations = new HashMap<String, String>();
+	String[] locationNames = {"us", "region", "division", "state", "county", "county subdivision", "place", "alaska native regional corporation",
+			"america indian area/alaska native area/hawaiian home land", "metropolitan statistical area/micropolitan statistical area", "principal city (or part)",
+			"metropolitan division", "combined satistical area", "combined new england city and town", "new england city and town area", "necta division", "urban area",
+			"congressional district", "public use microdata area", "school district (elementary)", "school district (secondary)", "school district (unified)"
+			};
 	
 	public CensusResponse[] retrieveData(int year) throws JsonParseException, JsonMappingException, IOException {
 		defaultLocations.put("us", "1");
@@ -152,7 +158,7 @@ public class ACSDataService {
 			
 			for(int i = 0; i < arrayMapped.length; i++) {
 				if(i != 0) {
-					cr[i-1] = new CensusResponse(new HashMap<String, Object>());
+					cr[i-1] = new CensusResponse(new HashMap<String, Object>(), new HashMap<String, Object>());
 				}
 				for(int j = 0; j < arrayMapped[i].length; j++) {
 					if(i == 0) {
@@ -166,7 +172,12 @@ public class ACSDataService {
 						}
 					} else {
 						arrayVals[i-1][j] = arrayMapped[i][j];
-						cr[i-1].setData(arrayKeys[j], arrayMapped[i][j]);
+						if(stringArrContains(locationNames,arrayKeys[j])) {
+							cr[i-1].setLocation(arrayKeys[j], arrayMapped[i][j]);
+						} else {
+							cr[i-1].setData(arrayKeys[j], arrayMapped[i][j]);
+						}
+						
 					}
 				}
 			}
@@ -280,5 +291,9 @@ public class ACSDataService {
 		}
 		System.out.println("Query uri: " + uri);
 		return uri;
+	}
+	
+	private static boolean stringArrContains(String[] arr, final String str) {
+		return Arrays.stream(arr).anyMatch(arrStr -> arrStr.equalsIgnoreCase(str));
 	}
 }
